@@ -90,7 +90,11 @@ class EmployeeController extends Controller
     public function destroy($nomor)
     {
         $employee = Employee::where('nomor', $nomor)->firstOrFail();
-        $employee->delete();
+        $employee->update([
+            'deleted_on' => Carbon::now()->toDateTimeString(),
+            'updated_on' => Carbon::now(),
+            'updated_by' => 'system',
+        ]);
 
         // Hapus cache Redis
         Redis::del('emp_' . $nomor);
